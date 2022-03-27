@@ -11,6 +11,9 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 
 """
+from collections import Counter
+from itertools import groupby
+from functools import reduce
 
 
 def pregunta_01():
@@ -21,7 +24,12 @@ def pregunta_01():
     214
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ',') for z in x]
+    x = [z.split(',') for z in x]
+    segunda_columna = [int(z[1]) for z in x]
+    return sum(segunda_columna)
 
 
 def pregunta_02():
@@ -39,7 +47,12 @@ def pregunta_02():
     ]
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ',') for z in x]
+    x = [z.split(',') for z in x]
+    primera_columna = [z[0] for z in x]
+    return sorted(list(Counter(primera_columna).items()))
 
 
 def pregunta_03():
@@ -57,7 +70,15 @@ def pregunta_03():
     ]
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ',') for z in x]
+    x = [z.split(',') for z in x]
+    primera_y_segunda_columna = [(z[0], int(z[1])) for z in x]
+    contador = Counter()
+    for k, v in primera_y_segunda_columna:
+        contador[k] += v
+    return sorted(list(contador.items()))
 
 
 def pregunta_04():
@@ -82,7 +103,12 @@ def pregunta_04():
     ]
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ',') for z in x]
+    x = [z.split(',') for z in x]
+    meses_tercera_columna = [z[2].split('-')[1] for z in x]
+    return sorted(list(Counter(meses_tercera_columna).items()))
 
 
 def pregunta_05():
@@ -100,7 +126,15 @@ def pregunta_05():
     ]
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ',') for z in x]
+    x = [z.split(',') for z in x]
+    primera_y_segunda_columna = sorted([(z[0], int(z[1])) for z in x])
+    agrupada_por_primera = [(k, [z[1] for z in g]) for k, g in groupby(primera_y_segunda_columna, lambda a: a[0])]
+
+    return [(primera_columna, max(segundas_columnas), min(segundas_columnas)) for primera_columna, segundas_columnas in
+            agrupada_por_primera]
 
 
 def pregunta_06():
@@ -125,7 +159,16 @@ def pregunta_06():
     ]
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ';') for z in x]
+    x = [z.split(';') for z in x]
+    quinta_columna = [z[4].split(',') for z in x]
+    quinta_columna_plana = sorted(item.split(':') for linea in quinta_columna for item in linea)
+    quinta_columna_agrupada = [(k, [int(z[1]) for z in g]) for k, g in groupby(quinta_columna_plana, lambda a: a[0])]
+
+    return [(primera_columna, min(segundas_columnas), max(segundas_columnas)) for primera_columna, segundas_columnas in
+            quinta_columna_agrupada]
 
 
 def pregunta_07():
@@ -149,7 +192,21 @@ def pregunta_07():
     ]
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ',') for z in x]
+    x = [z.split(',') for z in x]
+    primera_y_segunda_columna = [(z[1], z[0]) for z in x]
+
+    def reducir(valor, par):
+        if par[0] in valor:
+            valor[par[0]] = valor[par[0]] + [par[1]]
+        else:
+            valor[par[0]] = [par[1]]
+        return valor
+
+    conteo = reduce(reducir, primera_y_segunda_columna, {})
+    return sorted((int(k), v) for k, v in conteo.items())
 
 
 def pregunta_08():
@@ -174,7 +231,21 @@ def pregunta_08():
     ]
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ',') for z in x]
+    x = [z.split(',') for z in x]
+    primera_y_segunda_columna = [(z[1], z[0]) for z in x]
+
+    def reducir(valor, par):
+        if par[0] in valor:
+            valor[par[0]] = valor[par[0]] + [par[1]]
+        else:
+            valor[par[0]] = [par[1]]
+        return valor
+
+    conteo = reduce(reducir, primera_y_segunda_columna, {})
+    return sorted((int(k), sorted(list(set(v)))) for k, v in conteo.items())
 
 
 def pregunta_09():
@@ -197,7 +268,13 @@ def pregunta_09():
     }
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ';') for z in x]
+    x = [z.split(';') for z in x]
+    quinta_columna = [z[4].split(',') for z in x]
+    quinta_columna_plana = sorted(item.split(':')[0] for linea in quinta_columna for item in linea)
+    return dict(Counter(quinta_columna_plana))
 
 
 def pregunta_10():
@@ -218,7 +295,15 @@ def pregunta_10():
 
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ';') for z in x]
+    x = [z.split(';') for z in x]
+    x = [(z[0], z[3], z[4]) for z in x]
+
+    x = [(primera, len(cuarta.split(',')), len(quinta.split(','))) for primera, cuarta, quinta in x]
+
+    return x
 
 
 def pregunta_11():
@@ -237,9 +322,24 @@ def pregunta_11():
         "g": 35,
     }
 
-
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ';') for z in x]
+    x = [z.split(';') for z in x]
+    x = [(int(z[1]), z[3].split(',')) for z in x]
+
+    x = [(valor, letra) for valor, letras in x for letra in letras]
+
+    def reducir(acumulado, elemento):
+        if elemento[1] in acumulado:
+            acumulado[elemento[1]] += elemento[0]
+        else:
+            acumulado[elemento[1]] = elemento[0]
+        return acumulado
+
+    conteo = reduce(reducir, x, {})
+    return dict(sorted(conteo.items()))
 
 
 def pregunta_12():
@@ -257,4 +357,23 @@ def pregunta_12():
     }
 
     """
-    return
+    x = open("data.csv", "r").readlines()
+    x = [z.replace('\n', '') for z in x]
+    x = [z.replace('\t', ';') for z in x]
+    x = [z.split(';') for z in x]
+    x = [(z[0], z[4].split(',')) for z in x]
+
+    def extraer_sumar_numeros(quinta):
+        return reduce(lambda acumulado, elemento: acumulado + int(elemento.split(':')[1]), quinta, 0)
+
+    x = [(letra, extraer_sumar_numeros(quintas)) for letra, quintas in x]
+    def reducir(acumulado, elemento):
+        if elemento[0] in acumulado:
+            acumulado[elemento[0]] += elemento[1]
+        else:
+            acumulado[elemento[0]] = elemento[1]
+        return acumulado
+
+    conteo = reduce(reducir, x, {})
+    return dict(sorted(conteo.items()))
+
